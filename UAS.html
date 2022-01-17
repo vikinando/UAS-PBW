@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        input[type=text],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        label {
+            padding: 12px 12px 12px 0;
+            display: inline-block;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        .col-25 {
+            float: left;
+            width: 25%;
+            margin-top: 6px;
+        }
+
+        .col-75 {
+            float: left;
+            width: 75%;
+            margin-top: 6px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 600px) {
+
+            .col-25,
+            .col-75,
+            button {
+                width: 100%;
+                margin-top: 0;
+            }
+        }
+</style>
+</head>
+<body>
+    <h2>Simpan Daftar Belanja</h2>
+    <div class="container">
+            <input type="hidden" value="" name="toogleUpdate" id="toogleUpdate">
+            <div class="row">
+                <div class="col-15">
+                    <label for="fname"><h3>Nama Belanjaan :</h3></label>
+                </div>
+                <div class="col-50">
+                    <input type="text" id="belanjaan" name="belanjaan" placeholder="Nama Belanjaan..">
+                </div>
+                <div class="col-25">
+                    <button id="button" onclick="addItems()">Simpan</button>
+                </div>
+            </div>
+            <br>
+            <br>
+            <table id="meta_belanja">
+                <thead>
+                    <tr><th>No</th>
+                    <th>Nama Belanjaan</th>
+                    <th>Actions</th>
+                </tr></thead>
+                <tbody id="meta_body_belanja">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+    <footer>
+    <script>
+        let count = 1;
+        let list_belanjaan = {}
+        let thetable = document.getElementById("meta_belanja");
+    
+        function addItems(){
+            let belanjaan = document.getElementById("belanjaan").value;
+            let keyUpdate = document.getElementById("toogleUpdate").value;
+
+            
+            if(belanjaan.trim() == "" || belanjaan == undefined){
+                alert("Belanjaan Jangan Sampai Kosong!")
+                return;
+            }
+            
+            if(keyUpdate != ""){
+                list_belanjaan[keyUpdate] = belanjaan;    
+                document.getElementById("toogleUpdate").value = "";
+            }else{
+                list_belanjaan[count] = belanjaan;
+                count +=1;
+            }
+            refreshTable();
+        }
+
+        function refreshTable(){
+            while(thetable.rows.length > 1) {
+                thetable.deleteRow(1);
+            }
+
+            var new_tbody = document.createElement('tbody');
+            for(let key in list_belanjaan){
+                var row = thetable.insertRow();
+
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+
+                // Add some text to the new cells:
+                cell1.innerHTML = key;
+                cell2.innerHTML = list_belanjaan[key];
+                cell3.innerHTML = "<button id='deleteRow' onclick='deleteItems("+key+")'>Hapus</button> <button id='deleteRow' onclick='editItems("+key+")'>Edit</button>";
+            }
+        }
+
+        function deleteItems(key){
+            delete list_belanjaan[key]; 
+            refreshTable();
+        }
+
+        function editItems(key){
+            document.getElementById("belanjaan").value = list_belanjaan[key];
+            document.getElementById("toogleUpdate").value = key;
+        }
+    </script>
+</footer>
+</body>
+</html>
